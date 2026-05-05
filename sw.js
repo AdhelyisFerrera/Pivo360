@@ -1,29 +1,14 @@
-const CACHE_NAME = 'pivo360-v2';
+const CACHE_NAME = 'pivo360-v1';
 
 const FILES = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  './',
+  './index.html',
+  './manifest.json'
 ];
 
 self.addEventListener('install', e => {
-  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(FILES))
-  );
-});
-
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(key => {
-          if (key !== CACHE_NAME) return caches.delete(key);
-        })
-      )
-    )
   );
 });
 
