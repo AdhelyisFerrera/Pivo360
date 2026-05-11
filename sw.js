@@ -1,9 +1,10 @@
-const CACHE_NAME = 'pivo360-v1';
-
+const CACHE_NAME = 'pivo360-v2';
 const FILES = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './sw.js'
+  // Puedes agregar más archivos si quieres
 ];
 
 self.addEventListener('install', e => {
