@@ -90,12 +90,37 @@ if ('serviceWorker' in navigator) {
     background: rgba(255,255,255,0.04);
   }
 
-  .header-content{
+  .header-content {
   position: relative;
   z-index: 5;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.theme-toggle {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+  color: #fff;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+body.dark .theme-toggle {
+  background: rgba(255,255,255,0.08);
+}
+
+.theme-toggle:active {
+  transform: scale(0.92);
 }
 
 .theme-toggle{
@@ -544,13 +569,11 @@ body.dark .theme-btn{
 
   <!-- HOME VIEW -->
   <div id="view-home" class="view active">
-    <div class="header">
-      <div class="header-label">Progreso</div>
-<div class="header-content">
-  <div class="header-title">Mi Pasantía 2025-2026</div>
-
-  <div id="themeToggle" class="theme-toggle">
-    🌙
+   <div class="header">
+  <div class="header-label">Progreso</div>
+  <div class="header-content">
+    <div class="header-title">Mi Pasantía 2025-2026</div>
+    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
   </div>
 </div>
 
@@ -600,10 +623,13 @@ body.dark .theme-btn{
 
   <!-- ADD VIEW -->
   <div id="view-add" class="view">
-    <div class="header">
-      <div class="header-label">Nuevo registro</div>
-      <div class="header-title">Agregar día</div>
-    </div>
+   <div class="header">
+  <div class="header-label">Nuevo registro</div>
+  <div class="header-content">
+    <div class="header-title">Agregar día</div>
+    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+  </div>
+</div>
     <div class="section" style="padding-top:16px">
       <div class="form-card">
         <div class="field">
@@ -643,10 +669,13 @@ body.dark .theme-btn{
 
   <!-- HISTORY VIEW -->
   <div id="view-list" class="view">
-    <div class="header">
-      <div class="header-label">Registro</div>
-      <div class="header-title">Historial</div>
-    </div>
+    <<div class="header">
+  <div class="header-label">Registro</div>
+  <div class="header-content">
+    <div class="header-title">Historial</div>
+    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+  </div>
+</div>
     <div class="section" style="padding-top:16px">
       <div class="section-title" id="hist-title">0 días registrados</div>
       <div id="day-list"></div>
@@ -655,10 +684,13 @@ body.dark .theme-btn{
 
   <!-- SETTINGS VIEW -->
   <div id="view-settings" class="view">
-    <div class="header">
-      <div class="header-label">Configuración</div>
-      <div class="header-title">Ajustes</div>
-    </div>
+  <div class="header">
+  <div class="header-label">Configuración</div>
+  <div class="header-content">
+    <div class="header-title">Ajustes</div>
+    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+  </div>
+</div>
     <div class="section" style="padding-top:16px">
 
       <div class="settings-card">
@@ -811,33 +843,36 @@ function showTab(name) {
   if (name === 'list') renderList();
 }
 
-// 🌙 MODO OSCURO
-const toggle = document.getElementById('themeToggle');
-
+// ==================== MODO OSCURO ====================
 function applyTheme() {
-  const t = localStorage.getItem('theme');
-
-  if (t === 'dark') {
+  const savedTheme = localStorage.getItem('theme');
+  const isDark = savedTheme === 'dark' || 
+                (savedTheme === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  
+  if (isDark) {
     document.body.classList.add('dark');
-    toggle.textContent = '☀️';
   } else {
     document.body.classList.remove('dark');
-    toggle.textContent = '🌙';
   }
+  updateAllToggles();
 }
 
-toggle.addEventListener('click', () => {
+function updateAllToggles() {
+  const isDark = document.body.classList.contains('dark');
+  document.querySelectorAll('.theme-toggle').forEach(btn => {
+    btn.textContent = isDark ? '☀️' : '🌙';
+  });
+}
+
+function toggleTheme() {
   document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  updateAllToggles();
+}
 
-  const dark = document.body.classList.contains('dark');
-
-  localStorage.setItem('theme', dark ? 'dark' : 'light');
-
-  toggle.textContent = dark ? '☀️' : '🌙';
-});
-
+// Inicializar tema
 applyTheme();
-
 
 // ⏰ CAMBIO DE MODO
 document.getElementById('mode').addEventListener('change', e => {
