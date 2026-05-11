@@ -14,7 +14,9 @@
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js');   // ← MAL
+    navigator.serviceWorker.register('/Pivo360/sw.js')
+      .then(reg => console.log('SW registrado'))
+      .catch(err => console.log('Error SW:', err));
   });
 }
 </script>
